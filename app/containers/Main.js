@@ -5,6 +5,8 @@ import React, { Component } from 'react';
 import {
 	StyleSheet,
 	View,
+	TouchableOpacity,
+	Image,
 } from 'react-native';
 
 import {
@@ -19,11 +21,26 @@ class Main extends Component {
 		return (
 			<View style={styles.container} >
 				<View style={styles.header} >
+					<TouchableOpacity onPress={this.showMenu}>
+						<Image style={styles.menuIcon} source={require('../images/menu.png')} />
+					</TouchableOpacity>
 					<Timer style={styles.timer} ref={timer => this.timer = timer} />
+					<TouchableOpacity onPress={this.toggleEdit}>
+						<Image style={styles.menuIcon} source={require('../images/edit.png')} />
+					</TouchableOpacity>
 				</View>
 			</View>
 		)
 	}
+
+	showMenu() {
+
+	}
+
+	toggleEdit() {
+
+	}
+
 }
 
 const styles = StyleSheet.create({
@@ -35,11 +52,19 @@ const styles = StyleSheet.create({
 	},
 	header: {
 		width: Size.width,
+		paddingHorizontal: 15,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
 	},
 	timer: {
 		color: '#fff',
 		fontSize: Size.width * 3 / 40,
 		alignSelf: 'center',
+	},
+	menuIcon: {
+		width: Size.width * 3 / 40,
+		height: Size.width * 3 / 40
 	}
 });
 

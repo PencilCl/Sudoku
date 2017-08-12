@@ -22,10 +22,6 @@ class Timer extends Component {
 		paused: false
 	}
 
-	componentDidMount() {
-		this.start();
-	}
-
 	start() {
 		this.interval = setInterval(() => {
 			if (this.state.paused) {
@@ -60,18 +56,10 @@ class Timer extends Component {
 		this.setState({elapsed: elapsed});
 	}
 
-	onPress() {
-		if (this.state.paused) {
-			this.resume();
-		} else {
-			this.pause();
-		}
-	}
-
 	render() {
 		const { style } = this.props;
 		return (
-			<Text onPress={this.onPress.bind(this)} style={[styles.text, style]}>{formatTime(this.state.elapsed)}</Text>
+			<Text style={[styles.text, style]}>{formatTime(this.state.elapsed)}</Text>
 		)
 	}
 }
