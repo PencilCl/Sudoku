@@ -35,7 +35,7 @@ class Cell extends Component {
 		return (
 			<TouchableOpacity onPress={this.onPress.bind(this)}>
 				<View style={[styles.cell, highlight ? styles.highlightCell : (filled ? styles.filledCell : styles.unfilledCell)]}>
-					<Text style={[highlight ? styles.text : styles.highlightText]}>{this.props.number}</Text>
+					<Text style={[highlight ? styles.highlightText : null]}>{this.props.number}</Text>
 				</View>
 			</TouchableOpacity>
 		)
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
 		color: '#fff'
 	},
 	text: {
-		color: 'white'
+		fontSize: Size.width / 20,
 	},
 })
 

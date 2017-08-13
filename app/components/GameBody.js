@@ -9,17 +9,32 @@ import {
 
 import {
 	Size
-} from '../GlobalStyle.js'
+} from '../GlobalStyle.js';
 
-import Grid from './Grid.js'
+import Grid from './Grid.js';
+import Stack from './Stack.js';
 
 const oneToNine = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 class GameBody extends Component {
+	state = {
+		stack: [4, 3, 5, 6, 1, 2, 9, 8, 7],
+	}
+
 	onCellPress(grid, cell, index) {
 		this.highlightCell && this.highlightCell.setHighlight(false);
 		cell.setHighlight(true);
 		this.highlightCell = cell;
+	}
+
+	onStackPress(number) {
+		let stack = this.state.stack;
+		let quantity = stack[number - 1];
+		if (quantity <= 0) {
+			return;
+		}
+		stack[number - 1] = quantity - 1;
+		this.setState({stack: stack});
 	}
 
 	render() {
@@ -28,6 +43,7 @@ class GameBody extends Component {
 				<View style={styles.board}>
 					{oneToNine.map(x => <Grid onCellPress={this.onCellPress.bind(this)} key={x} style={styles.grid} />)}
 				</View>
+				<Stack onStackPress={this.onStackPress.bind(this)} remainingQuantity={this.state.stack} />
 			</View>
 		)
 	}
@@ -51,7 +67,7 @@ const styles = StyleSheet.create({
 		backgroundColor: 'orange',
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
 	}
 })
 
