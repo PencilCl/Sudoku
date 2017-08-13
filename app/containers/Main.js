@@ -14,6 +14,7 @@ import {
 } from '../GlobalStyle.js'
 
 import Timer from '../components/Timer.js'
+import GameBody from '../components/GameBody.js'
 
 class Main extends Component {
 
@@ -29,6 +30,7 @@ class Main extends Component {
 						<Image style={styles.menuIcon} source={require('../images/edit.png')} />
 					</TouchableOpacity>
 				</View>
+				<GameBody />
 			</View>
 		)
 	}
