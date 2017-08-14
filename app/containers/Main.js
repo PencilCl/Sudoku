@@ -7,6 +7,7 @@ import {
 	View,
 	TouchableOpacity,
 	Image,
+  AppState,
 } from 'react-native';
 
 import {
@@ -20,16 +21,30 @@ import MenuModal from '../components/MenuModal.js';
 class Main extends Component {
 
 	state = {
-		showMenu: false,
+		showMenu: true,
 		modal: {
 			newGameDisabled: false,
 			continueDisabled: true,
-			restartDisabled: false,
-		}
+			restartDisabled: true,
+		},
+		editing: false,
+		playing: false,
+	}
+
+	handeleAppStateChange = (currentAppState) => {
+	  if (currentAppState != 'active') this.showMenu();
+	}
+
+	componentDidMount() {
+	  AppState.addEventListener('change', this.handeleAppStateChange);
+	}
+
+	componentWillUnmount() {
+	  AppState.removeEventListener('change', this.handeleAppStateChange);
 	}
 
 	render() {
-		const { showMenu, modal } = this.state;
+		const { showMenu, modal, editing } = this.state;
 
 		return (
 			<View style={styles.container} >
@@ -38,11 +53,11 @@ class Main extends Component {
 						<Image style={styles.menuIcon} source={require('../images/menu.png')} />
 					</TouchableOpacity>
 					<Timer style={styles.timer} ref={timer => this.timer = timer} />
-					<TouchableOpacity onPress={this.toggleEdit}>
-						<Image style={styles.menuIcon} source={require('../images/edit.png')} />
+					<TouchableOpacity onPress={this.toggleEdit.bind(this)}>
+						<Image style={[styles.menuIcon, editing && {tintColor: 'khaki'}]} source={require('../images/edit.png')} />
 					</TouchableOpacity>
 				</View>
-				<GameBody />
+				<GameBody onGameOver={this.onGameOver.bind(this)} ref={game => this.game = game} />
 				<MenuModal {...modal}
 					onRequestClose={this.hideMenu.bind(this)}
 					show={showMenu}
@@ -54,19 +69,24 @@ class Main extends Component {
 	}
 
 	showMenu() {
+		this.state.playing && this.timer.pause();
 		this.setState({showMenu: true});
 	}
 
 	hideMenu() {
+		this.state.playing && this.timer.resume();
 		this.setState({showMenu: false});
 	}
 
 	toggleEdit() {
-
+		this.setState({editing: !this.state.editing});
 	}
 
 	onNewGame() {
+		this.setState({playing: true, modal: {restartDisabled: false}});
+		this.timer.start();
 		this.hideMenu();
+		this.game.newGame();
 	}
 
 	onContinue() {
@@ -75,6 +95,10 @@ class Main extends Component {
 
 	onRestart() {
 		this.hideMenu();
+	}
+
+	onGameOver() {
+		console.log("game over");
 	}
 
 }

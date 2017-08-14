@@ -22,10 +22,17 @@ class Grid extends Component {
 	}
 
 	render() {
-		const { style } = this.props;
+		const { style, data, index } = this.props;
+
+		const offset = Math.floor(index / 3) * 27 + index % 3 * 3;
+		let cell = [];
+		for (var i = 0; i < 9; i++) {
+			cell.push(<Cell key={i} onPress={this.onCellPress.bind(this)} number={data[offset + Math.floor(i / 3) * 9 + i % 3]} />)
+		}
+
 		return (
 			<View style={[styles.container, style]}>
-				{oneToNine.map(x => <Cell key={x} onPress={this.onCellPress.bind(this)} number={x} />)}
+				{cell}
 			</View>
 		)
 	}

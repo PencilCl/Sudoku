@@ -23,20 +23,14 @@ class Timer extends Component {
 	}
 
 	start() {
+		this.interval && clearInterval(this.interval);
+		this.setState({elapsed: 0, paused: false});
 		this.interval = setInterval(() => {
 			if (this.state.paused) {
 				return ;
 			}
 			this.setState({elapsed: this.state.elapsed + 100});
-		}, 100)
-	}
-
-	stop() {
-		this.interval && clearInterval(this.interval);
-		if (this.state.paused) {
-			this.setState({paused: false});
-		}
-		return this.state.elapsed;
+		}, 100);
 	}
 
 	pause() {

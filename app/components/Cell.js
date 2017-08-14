@@ -31,11 +31,11 @@ class Cell extends Component {
 	render() {
 		const { number } = this.props;
 		const { highlight } = this.state;
-		const filled = typeof(number) == 'number';
+		const filled = number != 0;
 		return (
 			<TouchableOpacity onPress={this.onPress.bind(this)}>
 				<View style={[styles.cell, highlight ? styles.highlightCell : (filled ? styles.filledCell : styles.unfilledCell)]}>
-					<Text style={[highlight ? styles.highlightText : null]}>{this.props.number}</Text>
+					{filled && <Text style={[highlight ? styles.highlightText : null]}>{this.props.number}</Text>}
 				</View>
 			</TouchableOpacity>
 		)
