@@ -34,7 +34,7 @@ class StackCell extends Component {
 		});
 		return (
 			<View style={[styles.wrapper, extraStyle.style]}>
-				<TouchableOpacity onPress={this.onPress.bind(this)}>
+				<TouchableOpacity disabled={typeof(number) != 'number'} onPress={this.onPress.bind(this)}>
 					<View style={styles.container}>
 						<Text style={styles.text}>{number}</Text>
 					</View>

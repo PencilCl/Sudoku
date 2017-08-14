@@ -94,7 +94,9 @@ class Main extends Component {
 	}
 
 	onRestart() {
+		this.timer.start();
 		this.hideMenu();
+		this.game.restartGame();
 	}
 
 	onGameOver() {

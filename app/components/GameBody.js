@@ -78,10 +78,10 @@ class GameBody extends Component {
 		for (var i = 0; i < 18; i++) {
 			while(!this._putOneNumberRandom());
 		}
-		// this.initState = this.state.data.slice();
-		// setTimeout(() => {
-			
-		// }, 1);
+		this.initState = {
+			stack: this.state.stack.slice(),
+			data: this.state.data.slice()
+		};
 	}
 
 	/**
@@ -109,7 +109,6 @@ class GameBody extends Component {
 			}
 		});
 		if (!this._isValid(number, blankPosition[random(blankPosition.length)])) {
-			console.log("false");
 			return false;
 		}
 		this.onStackPress(number);
@@ -166,16 +165,11 @@ class GameBody extends Component {
 		return true;
 	}
 
-	pauseGame() {
-
-	}
-
-	continueGame() {
-
-	}
-
 	restartGame() {
-
+		this.setState({
+			stack: this.initState.stack.slice(),
+			data: this.initState.data.slice()
+		});
 	}
 }
 
