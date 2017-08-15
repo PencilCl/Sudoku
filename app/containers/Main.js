@@ -27,7 +27,6 @@ class Main extends Component {
 			continueDisabled: true,
 			restartDisabled: true,
 		},
-		editing: false,
 		playing: false,
 	}
 
@@ -44,7 +43,7 @@ class Main extends Component {
 	}
 
 	render() {
-		const { showMenu, modal, editing } = this.state;
+		const { showMenu, modal } = this.state;
 
 		return (
 			<View style={styles.container} >
@@ -53,8 +52,8 @@ class Main extends Component {
 						<Image style={styles.menuIcon} source={require('../images/menu.png')} />
 					</TouchableOpacity>
 					<Timer style={styles.timer} ref={timer => this.timer = timer} />
-					<TouchableOpacity onPress={this.toggleEdit.bind(this)}>
-						<Image style={[styles.menuIcon, editing && {tintColor: 'khaki'}]} source={require('../images/edit.png')} />
+					<TouchableOpacity onPress={this.onClear.bind(this)}>
+						<Image style={styles.menuIcon} source={require('../images/clear.png')} />
 					</TouchableOpacity>
 				</View>
 				<GameBody onGameOver={this.onGameOver.bind(this)} ref={game => this.game = game} />
@@ -78,8 +77,8 @@ class Main extends Component {
 		this.setState({showMenu: false});
 	}
 
-	toggleEdit() {
-		this.setState({editing: !this.state.editing});
+	onClear() {
+		this.game.clearSelectedCell();
 	}
 
 	onNewGame() {
@@ -100,7 +99,8 @@ class Main extends Component {
 	}
 
 	onGameOver() {
-		console.log("game over");
+		this.timer.pause();
+		this.setState({playing: false});
 	}
 
 }

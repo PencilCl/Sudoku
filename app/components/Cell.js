@@ -14,27 +14,16 @@ import {
 } from '../GlobalStyle.js'
 
 class Cell extends Component {
-	state = {
-		highlight: false
-	}
-
-	setHighlight(highlight) {
-		this.setState({
-			highlight: highlight
-		});
-	}
-
 	onPress() {
-		this.props.onPress && this.props.onPress(this, this.props.index)
+		this.props.onPress && this.props.onPress(this.props.index)
 	}
 
 	render() {
-		const { number } = this.props;
-		const { highlight } = this.state;
+		const { number, highlight, fixed } = this.props;
 		const filled = number != 0;
 		return (
 			<TouchableOpacity onPress={this.onPress.bind(this)}>
-				<View style={[styles.cell, highlight ? styles.highlightCell : (filled ? styles.filledCell : styles.unfilledCell)]}>
+				<View style={[styles.cell, highlight ? styles.highlightCell : (fixed ? styles.fixedCell : (filled ? styles.filledCell : styles.unfilledCell))]}>
 					{filled && <Text style={[highlight ? styles.highlightText : null]}>{this.props.number}</Text>}
 				</View>
 			</TouchableOpacity>
@@ -57,6 +46,9 @@ const styles = StyleSheet.create({
 	},
 	filledCell: {
 		backgroundColor: 'moccasin',
+	},
+	fixedCell: {
+		backgroundColor: 'khaki',
 	},
 	highlightCell: {
 		backgroundColor: 'peru',

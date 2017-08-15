@@ -35,31 +35,95 @@ class GameBody extends Component {
 					 0, 0, 0, 0, 0, 0, 0, 0, 0,
 					 0, 0, 0, 0, 0, 0, 0, 0, 0,
 					 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		selectedIndex: null,
+		selectedNum: null,
+		gameOver: false,
+	}
+	fixedIndex = []
+
+	clearSelectedCell() {
+		if (this.state.gameOver) {
+			return ;
+		}
+		const index = this.state.selectedIndex;
+		const number = this.state.data[index];
+		if (index != null && number != 0) {
+			let data = this.state.data;
+			data[index] = 0;
+			this.setState({data: data});
+			this.updateStack(number, 1);
+		}
 	}
 
-	onCellPress(grid, cell, index) {
-		this.highlightCell && this.highlightCell.setHighlight(false);
-		cell.setHighlight(true);
-		this.highlightCell = cell;
+	onCellPress(index) {
+		const selectedNum = this.state.data[index];
+		if (this.initState.data[index] != 0) {
+			this.setState({selectedNum: selectedNum, selectedIndex: null});
+		} else {
+			this.setState({selectedIndex: index, selectedNum: null});
+		}
 	}
 
 	onStackPress(number) {
+		const { selectedNum, selectedIndex } = this.state;
+		if (selectedIndex != null) {
+			const currentNum = this.state.data[selectedIndex];
+			if (currentNum == number) {
+				return ;
+			}
+
+			if (this._isValid(number, selectedIndex)) {
+				let data = this.state.data;
+				data[selectedIndex] = number;
+				this.setState({data: data});
+				// 当前数字不为0，即进行替换操作，需要对当前数字的剩余数量+1
+				if (currentNum != 0) {
+					this.updateStack(currentNum, 1);
+				}
+				this.updateStack(number, -1);
+				if (this.isGameOver()) {
+					this.props.onGameOver && this.props.onGameOver();
+					this.setState({gameOver: true});
+				}
+			}
+		} else if (selectedNum != number) {
+			this.setState({selectedNum: number});
+		}
+	}
+
+	/**
+	 * 通过判断数字剩余个数判断游戏是否结束
+	 * @return {Boolean}
+	 */
+	isGameOver() {
+		const stack = this.state.stack;
+		for (let i = 0; i < 9; ++i) {
+			if (stack[i] > 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 更新剩余数字数量
+	 * 剩余数量 = 当前数量 + offset
+	 * @return {[type]}        [description]
+	 */
+	updateStack(number, offset) {
 		let stack = this.state.stack;
 		let quantity = stack[number - 1];
-		if (quantity <= 0) {
-			return;
-		}
-		stack[number - 1] = quantity - 1;
+		stack[number - 1] = quantity + offset;
 		this.setState({stack: stack});
 	}
 
 	render() {
-		const { data, stack } = this.state;
+		const { data, stack, selectedIndex, selectedNum } = this.state;
 
 		return (
 			<View style={styles.container}>
 				<View style={styles.board}>
-					{oneToNine.map(x => <Grid index={x - 1} data={data} onCellPress={this.onCellPress.bind(this)} key={x} style={styles.grid} />)}
+					{oneToNine.map(x => <Grid fixedIndex={this.fixedIndex} selectedIndex={selectedIndex} selectedNum={selectedNum} index={x - 1} data={data} onCellPress={this.onCellPress.bind(this)} key={x} style={styles.grid} />)}
 				</View>
 				<Stack onStackPress={this.onStackPress.bind(this)} remainingQuantity={stack} />
 			</View>
@@ -74,10 +138,17 @@ class GameBody extends Component {
 		for (let i = 0; i < 9; ++i) {
 			stack[i] = 9;
 		}
-		this.setState({data: data});
+		this.setState({stack: stack, data: data, selectedNum: null, selectedIndex: null, gameOver: false});
 		for (var i = 0; i < 18; i++) {
 			while(!this._putOneNumberRandom());
 		}
+		this.fixedIndex = []
+		this.state.data.forEach((x, index) => {
+			if (x != 0) {
+				this.fixedIndex.push(index);
+			}
+		});
+		console.log(this.fixedIndex);
 		this.initState = {
 			stack: this.state.stack.slice(),
 			data: this.state.data.slice()
@@ -111,7 +182,7 @@ class GameBody extends Component {
 		if (!this._isValid(number, blankPosition[random(blankPosition.length)])) {
 			return false;
 		}
-		this.onStackPress(number);
+		this.updateStack(number, -1);
 		return true;
 	}
 
@@ -168,7 +239,10 @@ class GameBody extends Component {
 	restartGame() {
 		this.setState({
 			stack: this.initState.stack.slice(),
-			data: this.initState.data.slice()
+			data: this.initState.data.slice(),
+			selectedIndex: null,
+			selectedNum: null,
+			gameOver: false,
 		});
 	}
 }

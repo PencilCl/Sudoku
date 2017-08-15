@@ -17,17 +17,19 @@ const oneToNine = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 class Grid extends Component {
 
-	onCellPress(cell, index) {
-		this.props.onCellPress && this.props.onCellPress(this, cell, index);
+	onCellPress(index) {
+		this.props.onCellPress && this.props.onCellPress(index);
 	}
 
 	render() {
-		const { style, data, index } = this.props;
+		const { style, data, index, selectedIndex, selectedNum, fixedIndex } = this.props;
 
 		const offset = Math.floor(index / 3) * 27 + index % 3 * 3;
 		let cell = [];
 		for (var i = 0; i < 9; i++) {
-			cell.push(<Cell key={i} onPress={this.onCellPress.bind(this)} number={data[offset + Math.floor(i / 3) * 9 + i % 3]} />)
+			let cellIndex = offset + Math.floor(i / 3) * 9 + i % 3
+			let number = data[cellIndex]
+			cell.push(<Cell fixed={fixedIndex.indexOf(cellIndex) != -1} index={cellIndex} highlight={cellIndex == selectedIndex || number == selectedNum} key={i} onPress={this.onCellPress.bind(this)} number={number} />)
 		}
 
 		return (
