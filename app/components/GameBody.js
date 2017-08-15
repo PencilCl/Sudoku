@@ -148,7 +148,6 @@ class GameBody extends Component {
 				this.fixedIndex.push(index);
 			}
 		});
-		console.log(this.fixedIndex);
 		this.initState = {
 			stack: this.state.stack.slice(),
 			data: this.state.data.slice()
